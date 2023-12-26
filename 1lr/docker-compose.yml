@@ -1,0 +1,10 @@
+services:
+  frontend_wch:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart:
+      unless-stopped
+    container_name: frontend
+    ports:
+      - "3000:3000"

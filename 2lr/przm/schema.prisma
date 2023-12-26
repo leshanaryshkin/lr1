@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Competicao {
+  id Int @id @default(autoincrement())
+  ano Int @unique
+  campeao Equipes? @relation(fields: [campeaoId], references: [id])
+  campeaoId Int? 
+  partidas Partidas[]
+  paisSede String
+  numeroDeEquipes Int @default(32)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Equipes {
+  id Int @id @default(autoincrement())
+  competicoesGanhas Competicao[]
+  comissaoDaEquipe ComissaoTecnica[]
+  jogadoresLinhaDaEquipe JogadorLinha[]
+  goleirosDaEquipe Goleiro[]
+  pais String 
+  ano Int
+  grupo String
+  golsPro Int @default(0)
+  golsContra Int @default(0)
+  saldoDeGols Int @default(0)
+  numeroDeVitorias Int @default(0)
+  numeroDeEmpates Int @default(0)
+  numeroDeDerrotas Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Estadios {
+  id Int @id @default(autoincrement())
+  partidasSediadas Partidas[]
+  nome String
+  capacidade Int @default(0)
+  cidade String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Partidas {
+  id Int @id @default(autoincrement())
+  estadio Estadios @relation(fields: [estadioId], references: [id])
+  estadioId Int
+  competicao Competicao @relation(fields: [competicaoId], references: [id])
+  competicaoId Int
+  ano Int
+  dataJogo DateTime
+  fase String
+  nomeEstadio String
+  vencedor String @default("")
+  equipe1 String
+  equipe2 String
+  golsEquipe1 Int @default(0)
+  golsEquipe2 Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model ComissaoTecnica {
+  id Int @id @default(autoincrement())
+  equipe Equipes @relation(fields: [equipeId], references: [id])
+  equipeId Int
+  passaporte String
+  nome String
+  idade Int
+  dataNascimento DateTime
+  funcao String
+  ano Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model JogadorLinha {
+  id Int @id @default(autoincrement())
+  equipe Equipes @relation(fields: [equipeId], references: [id])
+  equipeId Int
+  passaporte String
+  nome String
+  idade Int
+  dataNascimento DateTime
+  posicao String
+  gols Int @default(0)
+  assistencias Int @default(0)
+  cartoesAmarelos Int @default(0)
+  cartoesVermelhos Int @default(0)
+  ano Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
+
+model Goleiro {
+  id Int @id @default(autoincrement())
+  equipe Equipes @relation(fields: [equipeId], references: [id])
+  equipeId Int
+  passaporte String
+  nome String
+  idade Int
+  dataNascimento DateTime
+  defesas Int @default(0)
+  golsSofridos Int @default(0)
+  cartoesAmarelos Int @default(0)
+  cartoesVermelhos Int @default(0)
+  ano Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+}
